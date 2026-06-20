@@ -296,16 +296,6 @@
         remote-file-name-inhibit-auto-save-visited t)
   (setq tramp-use-connection-share nil))
 
-;; (use-package openwith
-;;   :ensure t
-;;   :hook dired-load-hook
-;;   :config
-;;   (setq openwith-associations
-;;     '(("\\.\\(?:cb[rtz]\\|djvu\\|p\\(?:df\\|s\\)\\)$" "zathura" (file))
-;;       ("\\.\\(?:gif\\|jp\\(?:e?g\\)\\|png\\|svg\\|tiff\\|webp\\)$" "imv" (file))
-;;       ("\\.\\(?:docx?\\|od[fpst]\\|pptx?\\|xlsx?\\)$" "libreoffice --norestore --nologo" (file))
-;;       ("\\.\\(?:avi\\|m\\(?:kv\\|p\\(?:4\\|eg\\)\\)\\)$" "mpv" (file)))))
-
 (use-package eat
   :ensure t
   :defer t
@@ -396,9 +386,12 @@
   ;; (setq-default base16-theme-256-color-source 'colors)
   (load-theme 'cobalt t))
 
-(use-package pass
-  :ensure t
-  :commands pass)
+;; (use-package pass
+;;   :ensure t
+;;   :commands pass
+;;   :hook
+;;   (pass-mode-hook . (lambda ()
+;;                      (setq-local show-trailing-whitespace nil))))
 
 (use-package pinentry
   :ensure t

@@ -1,6 +1,6 @@
 {{- $font := "IBM Plex Mono" -}}
 {{- $size := "size=9" -}}
-{{- if eq .chezmoi.hostname "home" }}{{$font = "UW Ttyp0"}}{{- $size := "pixelsize=15" -}}{{ end -}}
+{{- if eq .chezmoi.hostname "workstation" }}{{$font = "UW Ttyp0"}}{{- $size := "pixelsize=15" -}}{{ end -}}
 font={{- $font -}}:style=Regular:{{- $size}}
 font-bold={{- $font -}}:style=Bold:{{- $size}}
 font-bold-italic={{- $font -}}:style=Italic:{{- $size}}
