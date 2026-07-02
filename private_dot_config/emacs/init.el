@@ -370,8 +370,36 @@
     (set-window-buffer dired-dedicated-other-window (find-file-noselect (dired-get-file-for-visit)))
     (if focus (select-window dired-dedicated-other-window)))
 
-  ;; (keymap-set evil-normal-state-map "SPC d m" 'dired-mark-selected-window-as-chosen)
+  (add-to-list 'display-buffer-alist
+             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+
+  (setq async-shell-command-buffer "rename-buffer")
+
+  (setq dired-guess-shell-alist-user
+        (append '(("\\.\\(jpe?g\\|png\\|gif\\|bmp\\|webp\\|svg\\)$" "swayimg")
+                  ("\\.\\(pdf\\|djvu\\|ps\\)$" "zathura")
+                  ("\\.\\(docx?\\|xlsx?\\|pptx?\\|f?od\\(t\\|s\\|p\\|g\\|f\\)\\)$" "libreoffice --norestore --nologo")
+                  ("\\.\\(mp4\\|mkv\\|avi\\|mov\\|wmv\\|flv\\|mpg\\)$" "mpv"))
+                dired-guess-shell-alist-user))
+
+
+
+  (defun dired-user-open ()
+    "Open dired marked files in an external program according to `shell-command-guess'
+Show an error message and exit if no matching shell command is found"
+    (interactive)
+    (let* ((files (dired-get-marked-files t current-prefix-arg nil nil t))
+           (shell-command-list (shell-command-guess files)))
+      (message "%s" shell-command-list)
+      (if (null shell-command-list)
+          (message "No open command associated with %s" files)
+        (message "Trying to open %s with %s" files (car shell-command-list))
+        (dired-do-async-shell-command (car shell-command-list) "" files))))
+
+  (meow-leader-define-key
+   '("d m" . dired-mark-selected-window-as-chosen))
   (keymap-set dired-mode-map "-" 'dired-up-directory)
+  (keymap-set dired-mode-map "E" 'dired-user-open)
   (keymap-set dired-mode-map "o" 'dired-find-file-chosen-window)
   (keymap-set dired-mode-map "C-o" (lambda () (interactive) (dired-find-file-chosen-window t))))
 
@@ -409,6 +437,61 @@
   (meow-leader-define-key
    '("v v" . diff-hl-mode)
    '("v s" . diff-hl-stage-dwim)))
+
+(use-package mu4e
+  :commands mu4e-transient-menu
+  :after meow
+  :init
+    (meow-leader-define-key
+      '("e m" . mu4e-transient-menu))
+  :config
+  (setq mail-user-agent 'mu4e)
+  (setq mu4e-maildir "~/mail")
+
+  (setq mu4e-get-mail-command "mbsync -a"
+        mu4e-index-lazy-check nil       ; Maybe do it lazily and make it do a non-lazy
+                                        ; update based on a timer somewhere in the
+                                        ; mu4e-update-pre-hook
+        mu4e-update-interval nil)
+
+  (setq mu4e-contexts
+      (list
+       (make-mu4e-context
+        :name "int-sys"
+        :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/int-sys" (mu4e-message-field msg :maildir))))
+        :vars '((user-mail-address            . "g.cherdakly@int-sys.ru")
+                (user-full-name               . "Герман Чердакли")
+                (mu4e-inbox-folder            . "/int-sys/INBOX")
+                (mu4e-drafts-folder           . "/int-sys/Drafts")
+                (mu4e-sent-folder             . "/int-sys/Sent")
+                (mu4e-trash-folder            . "/int-sys/Trash")
+                (smtpmail-smtp-user           . "g.cherdakly")
+                (smtpmail-smtp-server         . "smtp.int-sys.ru")
+                (smtpmail-default-smtp-server . "smtp.int-sys.ru")
+                (smtpmail-smtp-service        . 465)
+                (smtpmail-stream-type         . 'tls)
+                ))))
+
+  (setq mu4e-context-policy 'ask)
+
+  (setq mu4e-attachment-dir "~/downloads")
+
+  (setq sendmail-program           "/usr/bin/msmtp"
+        send-mail-function         'sendmail-send-it
+        message-send-mail-function 'sendmail-send-it)
+
+  (add-to-list
+   'mu4e-view-actions '("ViewBrowser" . mu4e-action-view-in-browser) t)
+
+  :hook
+  ((mu4e-compose-mode . (lambda ()
+                          (set-fill-column 72)))
+   (dired-mode  . turn-on-gnus-dired-mode)))
+
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
