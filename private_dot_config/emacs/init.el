@@ -81,7 +81,7 @@
   (setq scroll-conservatively 1000
     scroll-margin 10)
 
-  (set-frame-font "Terminus 12" nil t)
+  (set-frame-font "UW Ttyp0 9" nil t)
   (setq enable-recursive-minibuffers t)
   (setq frame-inhibit-implied-resize t)
 
@@ -437,6 +437,12 @@ Show an error message and exit if no matching shell command is found"
   (meow-leader-define-key
    '("v v" . diff-hl-mode)
    '("v s" . diff-hl-stage-dwim)))
+
+(use-package mm-decode
+  :config
+  (add-to-list 'mm-discouraged-alternatives "image/.*" t)
+  (add-to-list 'mm-discouraged-alternatives "text/html" t)
+  (add-to-list 'mm-discouraged-alternatives "text/richtext" t))
 
 (use-package mu4e
   :commands mu4e-transient-menu
