@@ -96,7 +96,7 @@ swayimg.gallery.on_key("g",
 swayimg.viewer.on_key("y",
                       function()
                           local image = swayimg.viewer.get_image()
-                          os.execute("magick " .. image.path .. " PNG:- | wl-copy")
+                          os.execute("magick " .. image.path .. " -resize 1920x1080\\> PNG:- | wl-copy")
                           swayimg.text.set_status("Copied to clipboard")
                       end)
 

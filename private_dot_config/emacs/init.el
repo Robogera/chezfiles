@@ -81,7 +81,9 @@
   (setq scroll-conservatively 1000
     scroll-margin 10)
 
-  (set-frame-font "UW Ttyp0 9" nil t)
+  (if (string-equal system-name "homestation")
+      (set-frame-font "IBM Plex Mono 9" nil t)
+    (set-frame-font "UW Ttyp0 9" nil t))
   (setq enable-recursive-minibuffers t)
   (setq frame-inhibit-implied-resize t)
 
