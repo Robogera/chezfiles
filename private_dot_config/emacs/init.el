@@ -70,12 +70,12 @@
   (setq-default standard-indent 2)
 
   (setq-default show-trailing-whitespace nil)
-  (defun enable-show-trailing-whitespace ()
-    (when (or buffer-file-name
-              (derived-mode-p 'message-mode))
-      (setq-local show-trailing-whitespace t)))
-  (add-hook 'find-file-hook #'enable-show-trailing-whitespace)
-  (add-hook 'message-mode-hook #'enable-show-trailing-whitespace)
+  (add-hook 'find-file-hook (lambda ()
+                              (when buffer-file-name
+                                (setq-local show-trailing-whitespace t))))
+  (add-hook 'message-mode-hook (lambda ()
+                              (when (derived-mode-p 'message-mode)
+                                (setq-local show-trailing-whitespace t))))
 
   (setq make-backup-files nil) ; TODO: maybe move to a directory in $HOME
   (setq auto-save-default nil)
