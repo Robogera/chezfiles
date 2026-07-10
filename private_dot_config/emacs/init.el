@@ -68,7 +68,14 @@
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 2)
   (setq-default standard-indent 2)
-  (setq-default show-trailing-whitespace t)
+
+  (setq-default show-trailing-whitespace nil)
+  (defun enable-show-trailing-whitespace ()
+    (when (or buffer-file-name
+              (derived-mode-p 'message-mode))
+      (setq-local show-trailing-whitespace t)))
+  (add-hook 'find-file-hook #'enable-show-trailing-whitespace)
+  (add-hook 'message-mode-hook #'enable-show-trailing-whitespace)
 
   (setq make-backup-files nil) ; TODO: maybe move to a directory in $HOME
   (setq auto-save-default nil)
@@ -256,18 +263,18 @@
 ;;   (telega-root-mode-hook . (lambda ()
 ;;                      (setq-local show-trailing-whitespace nil))))
 
-(use-package eww
-  :commands eww
-  :hook
-  (eww-mode-hook . (lambda ()
-                     (setq-local show-trailing-whitespace nil))))
+;; (use-package eww
+;;   :commands eww
+;;   :hook
+;;   (eww-mode-hook . (lambda ()
+;;                      (setq-local show-trailing-whitespace nil))))
 
 (use-package eshell
   :commands eshell
-  :hook
-  (eshell-mode-hook . (lambda ()
-                        (setq-local show-trailing-whitespace nil)
-                        (display-line-numbers-mode -1)))
+  ;; :hook
+  ;; (eshell-mode-hook . (lambda ()
+  ;;                       (setq-local show-trailing-whitespace nil)
+  ;;                       (display-line-numbers-mode -1)))
   :init
   (setq eshell-visual-commands '())
   (setq eshell-visual-subcommands '())
