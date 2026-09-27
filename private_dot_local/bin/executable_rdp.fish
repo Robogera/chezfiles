@@ -10,5 +10,5 @@ end
 
 echo $_flag_url
 
-nohup xfreerdp3 /u:$(get_field $data user) /d:$(get_field $data domain) /p:$(get_field $data password) /tls:seclevel:0 /pwidth:518 /pheight:324 /mouse:relative:on,grab:off -wallpaper +window-drag +auto-reconnect -decorations +dynamic-resolution +home-drive /v:$_flag_url &
+nohup env DISPLAY=:3 xfreerdp3 /scale-desktop:200 /cert:ignore /u:$(get_field $data user) /d:$(get_field $data domain) /p:$(get_field $data password) /tls:seclevel:0 /pwidth:518 /pheight:324 /mouse:relative:on,grab:off -wallpaper +window-drag +auto-reconnect -decorations +dynamic-resolution +home-drive /v:$_flag_url &
 

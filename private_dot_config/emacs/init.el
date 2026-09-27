@@ -359,6 +359,8 @@
   :ensure t)
 
 (use-package dired
+  :hook
+  (dired-mode-hook . dired-hide-details-mode)
   :config
   (defvar dired-dedicated-other-window nil
     "A window marked to display files opened in dired.")
@@ -452,6 +454,34 @@ Show an error message and exit if no matching shell command is found"
   (add-to-list 'mm-discouraged-alternatives "image/.*" t)
   (add-to-list 'mm-discouraged-alternatives "text/html" t)
   (add-to-list 'mm-discouraged-alternatives "text/richtext" t))
+
+(use-package password-store
+  :ensure t
+  :defer t)
+
+(use-package gptel
+  :ensure t
+  :defer t
+  :preface
+  (defun routerai-key ()
+    "RouterAI API key"
+    (require 'password-store)
+    (string-trim (password-store-get "routerai.ru/api-key")))
+  :init
+  (setq gptel-model "deepseek/deepseek-v4-pro-0813"
+        gptel-default-mode 'org-mode
+        gptel-stream t)
+  :config
+  (setq gptel-backend
+        (gptel-make-openai "RouterAI"
+                           :host "routerai.ru"
+                           :endpoint "/api/v1/chat/completions"
+                           :protocol "https"
+                           :stream t
+                           :key #'routerai-key
+                           :models '("deepseek/deepseek-v4-pro-0813")
+                           :request-params '(:plugins [(:id "web" :max_results 5)]))))
+
 
 (use-package mu4e
   :commands mu4e-transient-menu
